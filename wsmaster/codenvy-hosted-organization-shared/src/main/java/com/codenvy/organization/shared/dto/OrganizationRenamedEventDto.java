@@ -57,10 +57,10 @@ public interface OrganizationRenamedEventDto extends OrganizationEventDto {
     OrganizationRenamedEventDto withNewName(String newName);
 
     /** Returns renamed organization */
-    Organization getOrganization();
+    OrganizationDto getOrganization();
 
-    void setOrganization(Organization organization);
+    void setOrganization(OrganizationDto organization);
 
-    OrganizationRenamedEventDto withOrganization(Organization organization);
+    OrganizationRenamedEventDto withOrganization(OrganizationDto organization);
 
 }

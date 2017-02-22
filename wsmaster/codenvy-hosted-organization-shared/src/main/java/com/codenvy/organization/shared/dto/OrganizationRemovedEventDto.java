@@ -43,10 +43,10 @@ public interface OrganizationRemovedEventDto extends OrganizationEventDto {
     OrganizationRemovedEventDto withPerformerName(String performerName);
 
     /** Returns removed organization */
-    Organization getOrganization();
+    OrganizationDto getOrganization();
 
-    void setOrganization(Organization organization);
+    void setOrganization(OrganizationDto organization);
 
-    OrganizationRemovedEventDto withOrganization(Organization organization);
+    OrganizationRemovedEventDto withOrganization(OrganizationDto organization);
 
 }
