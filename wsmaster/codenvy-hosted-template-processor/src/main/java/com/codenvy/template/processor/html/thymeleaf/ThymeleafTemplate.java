@@ -27,6 +27,10 @@ public abstract class ThymeleafTemplate implements Template {
 
     protected Context context;
 
+    public ThymeleafTemplate() {
+        this.context = new Context();
+    }
+
     public Context getContext() {
         return context;
     }
