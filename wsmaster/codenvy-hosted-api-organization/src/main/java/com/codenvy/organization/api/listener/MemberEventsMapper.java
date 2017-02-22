@@ -56,12 +56,12 @@ public class MemberEventsMapper implements EventSubscriber<PermissionsEvent> {
     }
 
     @PostConstruct
-    private void subscribe(EventService eventService) {
+    private void subscribe() {
         eventService.subscribe(this);
     }
 
     @PreDestroy
-    private void unsubscribe(EventService eventService) {
+    private void unsubscribe() {
         eventService.subscribe(this);
     }
 
