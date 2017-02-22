@@ -25,7 +25,7 @@ import org.thymeleaf.context.Context;
  */
 public abstract class ThymeleafTemplate implements Template {
 
-    protected Context context;
+    protected final Context context;
 
     public ThymeleafTemplate() {
         this.context = new Context();
