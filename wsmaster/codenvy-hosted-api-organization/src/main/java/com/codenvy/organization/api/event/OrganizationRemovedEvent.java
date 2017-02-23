@@ -47,22 +47,18 @@ public class OrganizationRemovedEvent implements OrganizationEvent {
         return performerName;
     }
 
+    @Override
     public Organization getOrganization() {
         return organization;
-    }
-
-    public List<? extends Member> getMembers() {
-        return members;
-    }
-
-    @Override
-    public String getOrganizationId() {
-        return organization.getId();
     }
 
     @Override
     public EventType getType() {
         return ORGANIZATION_REMOVED;
+    }
+
+    public List<? extends Member> getMembers() {
+        return members;
     }
 
     @Override
@@ -91,9 +87,8 @@ public class OrganizationRemovedEvent implements OrganizationEvent {
     @Override
     public String toString() {
         return "OrganizationRemovedEvent{" +
-               "organizationId='" + getOrganizationId() + '\'' +
-               ", eventType='" + getType() + '\'' +
                ", performerName='" + performerName + '\'' +
+               ", eventType='" + getType() + '\'' +
                ", members=" + members +
                ", organization=" + organization +
                '}';

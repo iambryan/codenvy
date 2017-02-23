@@ -49,7 +49,7 @@ public class OrganizationEventsWebsocketBroadcaster implements EventSubscriber<O
     public void onEvent(OrganizationEvent event) {
         try {
             final ChannelBroadcastMessage broadcastMessage = new ChannelBroadcastMessage();
-            broadcastMessage.setChannel(String.format(ORGANIZATION_CHANNEL_NAME, event.getOrganizationId()));
+            broadcastMessage.setChannel(String.format(ORGANIZATION_CHANNEL_NAME, event.getOrganization().getId()));
             broadcastMessage.setBody(DtoFactory.getInstance().toJson(DtoConverter.asDto(event)));
             WSConnectionContext.sendMessage(broadcastMessage);
         } catch (Exception x) {

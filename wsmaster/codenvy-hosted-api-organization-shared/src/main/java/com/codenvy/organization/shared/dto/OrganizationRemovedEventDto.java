@@ -20,32 +20,25 @@ import org.eclipse.che.api.core.notification.EventOrigin;
 import org.eclipse.che.dto.shared.DTO;
 
 /**
- * DTO for organization member removed events.
+ * DTO for organization removed events.
  *
  * @author Anton Korneta
  */
 @DTO
 @EventOrigin("organization")
-public interface MemberRemovedEventDto extends OrganizationEventDto {
+public interface OrganizationRemovedEventDto extends OrganizationEventDto {
 
     @Override
-    MemberRemovedEventDto withOrganizationId(String organizationId);
+    OrganizationRemovedEventDto withOrganization(OrganizationDto organization);
 
     @Override
-    MemberRemovedEventDto withType(EventType eventType);
+    OrganizationRemovedEventDto withType(EventType eventType);
 
-    /** Returns the name of the user that performed organization member removal */
+    /** Returns the name of the user that performed the removal of the organization */
     String getPerformerName();
 
     void setPerformerName(String performerName);
 
-    MemberRemovedEventDto withPerformerName(String performerName);
-
-    /** Returns removed organization member */
-    String getRemovedUserId();
-
-    void setRemovedUserId(String removedUserId);
-
-    MemberRemovedEventDto withRemovedUserId(String removedUserId);
+    OrganizationRemovedEventDto withPerformerName(String performerName);
 
 }

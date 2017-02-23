@@ -30,7 +30,7 @@ import org.eclipse.che.dto.shared.DTO;
 public interface OrganizationRenamedEventDto extends OrganizationEventDto {
 
     @Override
-    OrganizationRenamedEventDto withOrganizationId(String organizationId);
+    OrganizationRenamedEventDto withOrganization(OrganizationDto organization);
 
     @Override
     OrganizationRenamedEventDto withType(EventType eventType);
@@ -55,12 +55,5 @@ public interface OrganizationRenamedEventDto extends OrganizationEventDto {
     void setNewName(String newName);
 
     OrganizationRenamedEventDto withNewName(String newName);
-
-    /** Returns renamed organization */
-    OrganizationDto getOrganization();
-
-    void setOrganization(OrganizationDto organization);
-
-    OrganizationRenamedEventDto withOrganization(OrganizationDto organization);
 
 }

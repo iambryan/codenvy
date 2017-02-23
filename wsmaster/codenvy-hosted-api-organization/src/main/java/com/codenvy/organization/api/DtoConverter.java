@@ -76,17 +76,17 @@ public final class DtoConverter {
     public static MemberAddedEventDto asDto(MemberAddedEvent event) {
         return DtoFactory.newDto(MemberAddedEventDto.class)
                          .withType(event.getType())
-                         .withOrganizationId(event.getOrganizationId())
+                         .withOrganization(asDto(event.getOrganization()))
                          .withPerformerName(event.getPerformerName())
-                         .withAddedUserId(event.getAddedUserId());
+                         .withAddedUser(org.eclipse.che.api.user.server.DtoConverter.asDto(event.getAddedUser()));
     }
 
     public static MemberRemovedEventDto asDto(MemberRemovedEvent event) {
         return DtoFactory.newDto(MemberRemovedEventDto.class)
                          .withType(event.getType())
-                         .withOrganizationId(event.getOrganizationId())
-                         .withRemovedUserId(event.getRemovedUserId())
-                         .withPerformerName(event.getPerformerName());
+                         .withOrganization(asDto(event.getOrganization()))
+                         .withPerformerName(event.getPerformerName())
+                         .withRemovedUser(org.eclipse.che.api.user.server.DtoConverter.asDto(event.getRemovedUser()));
     }
 
     public static OrganizationEventDto asDto(OrganizationEvent event) {

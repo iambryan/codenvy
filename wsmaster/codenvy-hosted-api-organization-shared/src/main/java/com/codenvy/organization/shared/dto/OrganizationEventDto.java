@@ -29,9 +29,12 @@ import org.eclipse.che.dto.shared.DTO;
 @EventOrigin("organization")
 public interface OrganizationEventDto extends OrganizationEvent {
 
-    void setOrganizationId(String organizationId);
+    @Override
+    OrganizationDto getOrganization();
 
-    OrganizationEventDto withOrganizationId(String organizationId);
+    void setOrganization(OrganizationDto organization);
+
+    OrganizationEventDto withOrganization(OrganizationDto organization);
 
     void setType(EventType eventType);
 

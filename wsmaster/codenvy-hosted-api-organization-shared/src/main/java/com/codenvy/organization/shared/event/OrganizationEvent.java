@@ -14,6 +14,8 @@
  */
 package com.codenvy.organization.shared.event;
 
+import com.codenvy.organization.shared.model.Organization;
+
 /**
  * The base interface for organization events.
  *
@@ -21,7 +23,7 @@ package com.codenvy.organization.shared.event;
  */
 public interface OrganizationEvent {
 
-    String getOrganizationId();
+    Organization getOrganization();
 
     /** Returns type of this event. */
     EventType getType();

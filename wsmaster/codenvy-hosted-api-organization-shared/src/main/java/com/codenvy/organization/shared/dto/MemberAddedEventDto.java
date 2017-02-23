@@ -15,38 +15,38 @@
 package com.codenvy.organization.shared.dto;
 
 import com.codenvy.organization.shared.event.EventType;
-import com.codenvy.organization.shared.model.Organization;
 
 import org.eclipse.che.api.core.notification.EventOrigin;
+import org.eclipse.che.api.user.shared.dto.UserDto;
 import org.eclipse.che.dto.shared.DTO;
 
 /**
- * DTO for organization removed events.
+ * DTO for organization member added events.
  *
  * @author Anton Korneta
  */
 @DTO
 @EventOrigin("organization")
-public interface OrganizationRemovedEventDto extends OrganizationEventDto {
+public interface MemberAddedEventDto extends OrganizationEventDto {
 
     @Override
-    OrganizationRemovedEventDto withOrganizationId(String organizationId);
+    MemberAddedEventDto withOrganization(OrganizationDto organization);
 
     @Override
-    OrganizationRemovedEventDto withType(EventType eventType);
+    MemberAddedEventDto withType(EventType eventType);
 
-    /** Returns the name of the user that performed the removal of the organization */
+    /** Returns the name of the user that performed adding new organization member */
     String getPerformerName();
 
     void setPerformerName(String performerName);
 
-    OrganizationRemovedEventDto withPerformerName(String performerName);
+    MemberAddedEventDto withPerformerName(String performerName);
 
-    /** Returns removed organization */
-    OrganizationDto getOrganization();
+    /** Returns user that added to organization */
+    UserDto getAddedUser();
 
-    void setOrganization(OrganizationDto organization);
+    void setAddedUser(UserDto addedUser);
 
-    OrganizationRemovedEventDto withOrganization(OrganizationDto organization);
+    MemberAddedEventDto withAddedUser(UserDto addedUser);
 
 }

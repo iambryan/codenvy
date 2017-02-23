@@ -16,6 +16,9 @@ package com.codenvy.organization.api.event;
 
 import com.codenvy.organization.shared.event.EventType;
 import com.codenvy.organization.shared.event.OrganizationEvent;
+import com.codenvy.organization.shared.model.Organization;
+
+import org.eclipse.che.api.core.model.user.User;
 
 import java.util.Objects;
 
@@ -26,17 +29,16 @@ import java.util.Objects;
  */
 public class MemberRemovedEvent implements OrganizationEvent {
 
-    private final String performerName;
-    private final String removedUserId;
-    private final String organizationId;
-
+    private final String       performerName;
+    private final User         removedUser;
+    private final Organization organization;
 
     public MemberRemovedEvent(String performerName,
-                              String removedUserId,
-                              String organizationId) {
+                              User removedUser,
+                              Organization organization) {
         this.performerName = performerName;
-        this.removedUserId = removedUserId;
-        this.organizationId = organizationId;
+        this.removedUser = removedUser;
+        this.organization = organization;
     }
 
     @Override
@@ -45,16 +47,16 @@ public class MemberRemovedEvent implements OrganizationEvent {
     }
 
     @Override
-    public String getOrganizationId() {
-        return organizationId;
+    public Organization getOrganization() {
+        return organization;
     }
 
     public String getPerformerName() {
         return performerName;
     }
 
-    public String getRemovedUserId() {
-        return removedUserId;
+    public User getRemovedUser() {
+        return removedUser;
     }
 
     @Override
@@ -67,27 +69,26 @@ public class MemberRemovedEvent implements OrganizationEvent {
         }
         final MemberRemovedEvent that = (MemberRemovedEvent)obj;
         return Objects.equals(performerName, that.performerName)
-               && Objects.equals(removedUserId, that.removedUserId)
-               && Objects.equals(organizationId, that.organizationId);
+               && Objects.equals(removedUser, that.removedUser)
+               && Objects.equals(organization, that.organization);
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 31 * hash + Objects.hashCode(performerName);
-        hash = 31 * hash + Objects.hashCode(removedUserId);
-        hash = 31 * hash + Objects.hashCode(organizationId);
+        hash = 31 * hash + Objects.hashCode(removedUser);
+        hash = 31 * hash + Objects.hashCode(organization);
         return hash;
     }
 
     @Override
     public String toString() {
         return "MemberRemovedEvent{" +
-               "organizationId='" + getOrganizationId() + '\'' +
+               "performerName='" + performerName + '\'' +
                ", eventType='" + getType() + '\'' +
-               ", performerName='" + performerName + '\'' +
-               ", userId='" + removedUserId + '\'' +
+               ", removedUser=" + removedUser +
+               ", organization=" + organization +
                '}';
     }
-
 }

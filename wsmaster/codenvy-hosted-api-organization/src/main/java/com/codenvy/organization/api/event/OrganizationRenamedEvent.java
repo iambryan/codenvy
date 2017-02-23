@@ -56,13 +56,9 @@ public class OrganizationRenamedEvent implements OrganizationEvent {
         return newName;
     }
 
+    @Override
     public Organization getOrganization() {
         return organization;
-    }
-
-    @Override
-    public String getOrganizationId() {
-        return organization.getId();
     }
 
     @Override
@@ -98,9 +94,9 @@ public class OrganizationRenamedEvent implements OrganizationEvent {
     @Override
     public String toString() {
         return "OrganizationRenamedEvent{" +
-               "organizationId='" + getOrganizationId() + '\'' +
-               ", eventType='" + getType() + '\'' +
+               "organization='" + organization +
                ", performerName='" + performerName + '\'' +
+               ", eventType='" + getType() + '\'' +
                ", oldName='" + oldName + '\'' +
                ", newName='" + newName + '\'' +
                ", organization=" + organization +

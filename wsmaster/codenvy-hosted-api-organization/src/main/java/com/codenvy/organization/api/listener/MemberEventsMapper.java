@@ -22,9 +22,11 @@ import com.codenvy.organization.api.OrganizationManager;
 import com.codenvy.organization.api.event.MemberAddedEvent;
 import com.codenvy.organization.api.event.MemberRemovedEvent;
 import com.codenvy.organization.api.permissions.OrganizationDomain;
+import com.codenvy.organization.shared.model.Organization;
 
 import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.ServerException;
+import org.eclipse.che.api.core.model.user.User;
 import org.eclipse.che.api.core.notification.EventService;
 import org.eclipse.che.api.core.notification.EventSubscriber;
 import org.eclipse.che.api.user.server.UserManager;
@@ -76,17 +78,17 @@ public class MemberEventsMapper implements EventSubscriber<PermissionsEvent> {
                 } catch (NotFoundException ignore) {
                     switch (event.getType()) {
                         case PERMISSIONS_ADDED: {
-                            String performerName = ((PermissionsAddedEvent)event).getPerformerName();
-                            eventService.publish(new MemberAddedEvent(performerName,
-                                                                      permissions.getUserId(),
-                                                                      permissions.getInstanceId()));
+                            final String performerName = ((PermissionsAddedEvent)event).getPerformerName();
+                            final User addedMember = userManager.getById(permissions.getUserId());
+                            final Organization org = organizationManager.getById(permissions.getInstanceId());
+                            eventService.publish(new MemberAddedEvent(performerName, addedMember, org));
                             break;
                         }
                         case PERMISSIONS_REMOVED: {
-                            String performerName = ((PermissionsRemovedEvent)event).getPerformerName();
-                            eventService.publish(new MemberRemovedEvent(performerName,
-                                                                        permissions.getUserId(),
-                                                                        permissions.getInstanceId()));
+                            final String performerName = ((PermissionsRemovedEvent)event).getPerformerName();
+                            final User removedMember = userManager.getById(permissions.getUserId());
+                            final Organization org = organizationManager.getById(permissions.getInstanceId());
+                            eventService.publish(new MemberRemovedEvent(performerName, removedMember, org));
                         }
                     }
                 }

@@ -83,10 +83,10 @@ public class OrganizationNotificationEmailSender implements EventSubscriber<Orga
     @Inject
     public OrganizationNotificationEmailSender(@Named("mailsender.application.from.email.address") String mailFrom,
                                                @Named("che.api") String apiEndpoint,
-                                               @Named("") String memberAddedSubject,
-                                               @Named("") String memberRemovedSubject,
-                                               @Named("") String teamRenamedSubject,
-                                               @Named("") String teamRemovedSubject,
+                                               @Named("team.email.member.added.subject") String memberAddedSubject,
+                                               @Named("team.email.member.removed.subject") String memberRemovedSubject,
+                                               @Named("team.email.renamed.subject") String teamRenamedSubject,
+                                               @Named("team.email.removed.subject") String teamRemovedSubject,
                                                HTMLTemplateProcessor<ThymeleafTemplate> thymeleaf,
                                                EventService eventService,
                                                MailSender mailSender,
@@ -127,8 +127,8 @@ public class OrganizationNotificationEmailSender implements EventSubscriber<Orga
     }
 
     private void send(MemberAddedEvent event) throws Exception {
-        final String teamName = organizationManager.getById(event.getOrganizationId()).getName();
-        final String emailTo = userManager.getById(event.getAddedUserId()).getEmail();
+        final String teamName = event.getOrganization().getName();
+        final String emailTo = event.getAddedUser().getEmail();
         final String referrerName = event.getPerformerName();
         final String teamLink = apiEndpoint.replace("api", "dashboard/#/team/" + referrerName + '/' + teamName);
         final String processed = thymeleaf.process(new MemberAddedTemplate(teamName, teamLink, referrerName));
@@ -136,9 +136,9 @@ public class OrganizationNotificationEmailSender implements EventSubscriber<Orga
     }
 
     private void send(MemberRemovedEvent event) throws Exception {
-        final String teamName = organizationManager.getById(event.getOrganizationId()).getName();
+        final String teamName = event.getOrganization().getName();
         final String managerName = event.getPerformerName();
-        final String emailTo = userManager.getById(event.getRemovedUserId()).getEmail();
+        final String emailTo = event.getRemovedUser().getEmail();
         final String processed = thymeleaf.process(new MemberRemovedTemplate(teamName, managerName));
         send(new EmailBean().withBody(processed).withSubject(memberRemovedSubject), emailTo);
     }
@@ -160,7 +160,7 @@ public class OrganizationNotificationEmailSender implements EventSubscriber<Orga
         Page<? extends Member> members;
         long next = 0;
         do {
-            members = organizationManager.getMembers(event.getOrganizationId(), PAGE_SIZE, next);
+            members = organizationManager.getMembers(event.getOrganization().getId(), PAGE_SIZE, next);
             for (Member member : members.getItems()) {
                 final String emailTo = userManager.getById(member.getUserId()).getEmail();
                 try {
