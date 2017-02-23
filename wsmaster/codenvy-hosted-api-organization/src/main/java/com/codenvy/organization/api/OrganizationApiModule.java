@@ -67,6 +67,14 @@ public class OrganizationApiModule extends AbstractModule {
         bind(com.codenvy.organization.api.listener.OrganizationEventsWebsocketBroadcaster.class).asEagerSingleton();
         bind(com.codenvy.organization.api.listener.OrganizationNotificationEmailSender.class).asEagerSingleton();
         bind(com.codenvy.organization.api.listener.MemberEventsMapper.class).asEagerSingleton();
+        bind(String.class).annotatedWith(Names.named("email.subject.member.added"))
+                          .toInstance("You’ve been added to a Codenvy team");
+        bind(String.class).annotatedWith(Names.named("email.subject.member.removed"))
+                          .toInstance("You’ve been removed from a Codenvy team");
+        bind(String.class).annotatedWith(Names.named("email.subject.team.renamed"))
+                          .toInstance("Codenvy Team renamed");
+        bind(String.class).annotatedWith(Names.named("email.subject.team.removed"))
+                          .toInstance("Codenvy Team renamed");
 
         Multibinder.newSetBinder(binder(), PermissionsDomain.class, Names.named(SuperPrivilegesChecker.SUPER_PRIVILEGED_DOMAINS))
                    .addBinding().to(OrganizationDomain.class);

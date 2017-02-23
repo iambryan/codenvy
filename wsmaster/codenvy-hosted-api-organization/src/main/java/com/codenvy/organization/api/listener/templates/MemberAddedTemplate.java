@@ -17,6 +17,7 @@ package com.codenvy.organization.api.listener.templates;
 import com.codenvy.template.processor.html.thymeleaf.ThymeleafTemplate;
 
 /**
+ *
  * Defines thymeleaf template organization member added notifications.
  *
  * @author Anton Korneta

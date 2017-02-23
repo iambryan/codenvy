@@ -52,6 +52,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+import static com.codenvy.template.processor.html.CodenvyTemplateLogos.LOGOS;
 import static com.google.common.io.Files.toByteArray;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 
@@ -67,34 +68,37 @@ public class OrganizationNotificationEmailSender implements EventSubscriber<Orga
 
     private static final int PAGE_SIZE = 100;
 
+    private final String                                   apiEndpoint;
+    private final String                                   memberAddedSubject;
+    private final String                                   memberRemovedSubject;
+    private final String                                   teamRenamedSubject;
+    private final String                                   teamRemovedSubject;
     private final EventService                             eventService;
     private final String                                   mailFrom;
     private final HTMLTemplateProcessor<ThymeleafTemplate> thymeleaf;
-    private final String                                   apiEndpoint;
     private final MailSender                               mailSender;
     private final OrganizationManager                      organizationManager;
     private final UserManager                              userManager;
 
-    public static final ImmutableMap<String, String> INVOICE_LOGOS = ImmutableMap.<String, String>builder()
-            .put("codenvy", "/email-templates/logo-codenvy-white.png")
-            .put("codenvySmall", "/email-templates/196x196-white.png")
-            .put("linkedin", "/email-templates/logo_social_linkedin.png")
-            .put("facebook", "/email-templates/logo_social_facebook.png")
-            .put("twitter", "/email-templates/logo_social_twitter.png")
-            .put("medium", "/email-templates/logo_social_medium.png")
-            .build();
-
     @Inject
     public OrganizationNotificationEmailSender(@Named("mailsender.application.from.email.address") String mailFrom,
                                                @Named("che.api") String apiEndpoint,
+                                               @Named("") String memberAddedSubject,
+                                               @Named("") String memberRemovedSubject,
+                                               @Named("") String teamRenamedSubject,
+                                               @Named("") String teamRemovedSubject,
                                                HTMLTemplateProcessor<ThymeleafTemplate> thymeleaf,
                                                EventService eventService,
                                                MailSender mailSender,
                                                OrganizationManager organizationManager,
                                                UserManager userManager) {
         this.mailFrom = mailFrom;
-        this.mailSender = mailSender;
         this.apiEndpoint = apiEndpoint;
+        this.memberAddedSubject = memberAddedSubject;
+        this.memberRemovedSubject = memberRemovedSubject;
+        this.teamRenamedSubject = teamRenamedSubject;
+        this.teamRemovedSubject = teamRemovedSubject;
+        this.mailSender = mailSender;
         this.eventService = eventService;
         this.thymeleaf = thymeleaf;
         this.organizationManager = organizationManager;
@@ -128,7 +132,7 @@ public class OrganizationNotificationEmailSender implements EventSubscriber<Orga
         final String referrerName = event.getPerformerName();
         final String teamLink = apiEndpoint.replace("api", "dashboard/#/team/" + referrerName + '/' + teamName);
         final String processed = thymeleaf.process(new MemberAddedTemplate(teamName, teamLink, referrerName));
-        send(new EmailBean().withBody(processed), emailTo);
+        send(new EmailBean().withBody(processed).withSubject(memberAddedSubject), emailTo);
     }
 
     private void send(MemberRemovedEvent event) throws Exception {
@@ -136,7 +140,7 @@ public class OrganizationNotificationEmailSender implements EventSubscriber<Orga
         final String managerName = event.getPerformerName();
         final String emailTo = userManager.getById(event.getRemovedUserId()).getEmail();
         final String processed = thymeleaf.process(new MemberRemovedTemplate(teamName, managerName));
-        send(new EmailBean().withBody(processed), emailTo);
+        send(new EmailBean().withBody(processed).withSubject(memberRemovedSubject), emailTo);
     }
 
     private void send(OrganizationRemovedEvent event) throws Exception {
@@ -144,7 +148,7 @@ public class OrganizationNotificationEmailSender implements EventSubscriber<Orga
         for (Member member : event.getMembers()) {
             final String emailTo = userManager.getById(member.getUserId()).getEmail();
             try {
-                send(new EmailBean().withBody(processed), emailTo);
+                send(new EmailBean().withBody(processed).withSubject(teamRemovedSubject), emailTo);
             } catch (Exception ignore) {
             }
         }
@@ -160,7 +164,7 @@ public class OrganizationNotificationEmailSender implements EventSubscriber<Orga
             for (Member member : members.getItems()) {
                 final String emailTo = userManager.getById(member.getUserId()).getEmail();
                 try {
-                    send(new EmailBean().withBody(processed), emailTo);
+                    send(new EmailBean().withBody(processed).withSubject(teamRenamedSubject), emailTo);
                 } catch (Exception ignore) {
                 }
             }
@@ -169,8 +173,8 @@ public class OrganizationNotificationEmailSender implements EventSubscriber<Orga
     }
 
     private void send(EmailBean emailBean, String mailTo) throws IOException, ServerException {
-        final List<Attachment> attachments = new ArrayList<>(INVOICE_LOGOS.size());
-        for (Map.Entry<String, String> entry : INVOICE_LOGOS.entrySet()) {
+        final List<Attachment> attachments = new ArrayList<>(LOGOS.size());
+        for (Map.Entry<String, String> entry : LOGOS.entrySet()) {
             final File logo = new File(this.getClass().getResource(entry.getValue()).getPath());
             final String encoded = Base64.getEncoder().encodeToString(toByteArray(logo));
             attachments.add(new Attachment().withContent(encoded)
@@ -178,10 +182,10 @@ public class OrganizationNotificationEmailSender implements EventSubscriber<Orga
                                             .withFileName(entry.getKey()));
         }
         mailSender.sendMail(emailBean.withFrom(mailFrom)
+                                     .withReplyTo(mailFrom)
                                      .withTo(mailTo)
                                      .withMimeType(TEXT_HTML)
-                                     .withAttachments(attachments)
-                                     .withSubject("Teams status"));
+                                     .withAttachments(attachments));
     }
 
     @PostConstruct
